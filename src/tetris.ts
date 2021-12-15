@@ -87,7 +87,7 @@ function losowanie_nexta() {
     if (document.getElementById("next")) {
         plansza_div.removeChild(document.getElementById("next"))
     }
-    next = Math.floor(Math.random() * (7 - 1)) + 1;
+    next = Math.floor(Math.random() * (7)) + 1;
     let next_img: HTMLImageElement = document.createElement("img")
     next_img.id = "next"
     if (next == 3) {
@@ -170,10 +170,12 @@ function wszystko_z_klockiem() {
     let x: number = 4
     let y: number = 1
     let transform = 'rotate(0deg)'
-
+    let pion: number = 178 + 26 * y
+    let poziom: number = 15 + 26 * x
     let zmienna: boolean = false
     let prawo: boolean = false
     let lewo: boolean = false
+    let korekta: number = 0
     function spadanie(gdzie: string) {
         let sprawdza_czy_git: boolean = false
         if (gdzie == "dol") {
@@ -205,13 +207,14 @@ function wszystko_z_klockiem() {
                 plansza_div.removeChild(document.getElementById("klocuch nowy"))
             }
 
-            let pion: number = 178 + 26 * y
-            let poziom: number = 15 + 26 * x
+
             let dodawany_img: HTMLImageElement = document.createElement("img") as HTMLImageElement
             dodawany_img.src = "./assets/kolor" + dodawany + ".png"
             dodawany_img.id = "klocuch nowy"
+            pion = (178 + 26 * y) + korekta
+            poziom = (15 + 26 * x) - korekta
             dodawany_img.style.left = poziom + "px"
-            dodawany_img.style.top = pion + "px"
+            dodawany_img.style.top = pion + 2 + "px"
             dodawany_img.style.position = "absolute"
             dodawany_img.style.transform = transform
             if (dodawany == 3) {
@@ -343,22 +346,48 @@ function wszystko_z_klockiem() {
             }
         } else if (e.key == "ArrowLeft") {
             let oldSymbol = klocek
+            let img: HTMLImageElement = document.getElementById("klocuch nowy") as HTMLImageElement
+            console.log(img)
+
+
             if (klocek.length == 4) {
                 if (klocek[1][0] == 0) {
-                    klocek = [[1, 0, 0, 0], [1, 0, 0, 0], [1, 0, 0, 0], [1, 0, 0, 0]]
-                    transform = 'rotate(0eg)'
+                    klocek = [
+                        [1, 0, 0, 0],
+                        [1, 0, 0, 0],
+                        [1, 0, 0, 0],
+                        [1, 0, 0, 0]]
+                    transform = 'rotate(270deg)'
+                    img.style.transform = 'rotate(270deg)'
+                    korekta = 37
+                    poziom = poziom - korekta
+                    pion = pion + 2 + korekta
+                    img.style.top = pion + "px"
+                    img.style.left = poziom + "px"
                 } else {
-                    klocek = [[1, 1, 1, 1], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]]
-                    transform = 'rotate(90eg)'
+                    klocek = [
+                        [1, 1, 1, 1],
+                        [0, 0, 0, 0],
+                        [0, 0, 0, 0],
+                        [0, 0, 0, 0]]
+                    korekta = 0
+                    poziom = poziom + korekta
+                    pion = pion - korekta
+                    transform = 'rotate(0deg)'
+                    img.style.transform = 'rotate(0deg)'
+                    img.style.top = pion + "px"
+                    img.style.left = poziom + "px"
 
                 }
-                let img = document.getElementById("klocuch nowy")
-                console.log(transform)
-                img.style.transform = transform
 
 
-            } else if (dodawany == 1 || dodawany == 2 || dodawany == 6) {
-                klocek = [[0, 0, 0], [0, 1, 0], [0, 0, 0]]
+
+            }
+            else if (dodawany == 1 || dodawany == 2 || dodawany == 6) {
+                klocek = [
+                    [0, 0, 0],
+                    [0, 1, 0],
+                    [0, 0, 0]]
                 if (oldSymbol[0][0] == 1)
                     klocek[0][2] = 1
                 if (oldSymbol[0][2] == 1)
@@ -384,24 +413,52 @@ function wszystko_z_klockiem() {
                         [1, 0, 0],
                         [1, 0, 0],
                     ]
+                    korekta = 37
+                    poziom = poziom + korekta
+                    pion = pion - korekta
+                    transform = 'rotate(270deg)'
+                    img.style.transform = 'rotate(270deg)'
+                    img.style.top = pion + "px"
+                    img.style.left = poziom + "px"
                 } else if (klocek[0][1] == 1 && klocek[1][0] == 1) {
                     klocek = [
                         [0, 0, 0],
                         [1, 0, 0],
                         [1, 1, 1],
                     ]
+                    korekta = 37
+                    poziom = poziom + korekta
+                    pion = pion - korekta
+                    transform = 'rotate(180deg)'
+                    img.style.transform = 'rotate(180deg)'
+                    img.style.top = pion + "px"
+                    img.style.left = poziom + "px"
                 } else if (klocek[1][0] == 1 && klocek[2][1] == 1) {
                     klocek = [
                         [0, 0, 1],
                         [0, 0, 1],
                         [0, 1, 1],
                     ]
+                    korekta = 37
+                    poziom = poziom + korekta
+                    pion = pion - korekta
+                    transform = 'rotate(90deg)'
+                    img.style.transform = 'rotate(90deg)'
+                    img.style.top = pion + "px"
+                    img.style.left = poziom + "px"
                 } else {
                     klocek = [
                         [1, 1, 1],
                         [0, 0, 1],
                         [0, 0, 0],
                     ]
+                    korekta = 0
+                    poziom = poziom + korekta
+                    pion = pion - korekta
+                    transform = 'rotate(0deg)'
+                    img.style.transform = 'rotate(0deg)'
+                    img.style.top = pion + "px"
+                    img.style.left = poziom + "px"
                 }
             } else if (dodawany == 7) {
                 if (klocek[0][1] == 1 && klocek[1][0] == 1) {
@@ -410,24 +467,52 @@ function wszystko_z_klockiem() {
                         [1, 0, 0],
                         [1, 1, 0],
                     ]
+                    korekta = 37
+                    poziom = poziom + korekta
+                    pion = pion - korekta
+                    transform = 'rotate(90deg)'
+                    img.style.transform = 'rotate(90deg)'
+                    img.style.top = pion + "px"
+                    img.style.left = poziom + "px"
                 } else if (klocek[1][0] == 1 && klocek[2][1] == 1) {
                     klocek = [
                         [0, 0, 0],
                         [0, 0, 1],
                         [1, 1, 1],
                     ]
+                    korekta = 37
+                    poziom = poziom + korekta
+                    pion = pion - korekta
+                    transform = 'rotate(180deg)'
+                    img.style.transform = 'rotate(180deg)'
+                    img.style.top = pion + "px"
+                    img.style.left = poziom + "px"
                 } else if (klocek[1][2] == 1 && klocek[2][1] == 1) {
                     klocek = [
                         [0, 1, 1],
                         [0, 0, 1],
                         [0, 0, 1],
                     ]
+                    korekta = 37
+                    poziom = poziom + korekta
+                    pion = pion - korekta
+                    transform = 'rotate(270deg)'
+                    img.style.transform = 'rotate(270deg)'
+                    img.style.top = pion + "px"
+                    img.style.left = poziom + "px"
                 } else {
                     klocek = [
                         [1, 1, 1],
                         [1, 0, 0],
                         [0, 0, 0],
                     ]
+                    korekta = 0
+                    poziom = poziom + korekta
+                    pion = pion - korekta
+                    transform = 'rotate(0deg)'
+                    img.style.transform = 'rotate(0deg)'
+                    img.style.top = pion + "px"
+                    img.style.left = poziom + "px"
                 }
             }
             let sprawdza_czy_git: boolean = false
@@ -454,96 +539,172 @@ function wszystko_z_klockiem() {
 
         } else if (e.key == "ArrowRight") {
             let oldSymbol = klocek
+            let img: HTMLImageElement = document.getElementById("klocuch nowy") as HTMLImageElement
 
+            img.style.transform = transform
             if (klocek.length == 4) {
                 if (klocek[1][0] == 0) {
-                    klocek = [[1, 0, 0, 0], [1, 0, 0, 0], [1, 0, 0, 0], [1, 0, 0, 0]]
-                    transform = 'rotate(0eg)'
+                    klocek = [
+                        [1, 0, 0, 0],
+                        [1, 0, 0, 0],
+                        [1, 0, 0, 0],
+                        [1, 0, 0, 0]]
+                    transform = 'rotate(270deg)'
+                    img.style.transform = 'rotate(270deg)'
+                    korekta = 37
+                    poziom = poziom - korekta
+                    pion = pion + 2 + korekta
+                    img.style.top = pion + "px"
+                    img.style.left = poziom + "px"
                 } else {
-                    klocek = [[1, 1, 1, 1], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]]
-                    transform = 'rotate(90eg)'
+                    klocek = [
+                        [1, 1, 1, 1],
+                        [0, 0, 0, 0],
+                        [0, 0, 0, 0],
+                        [0, 0, 0, 0]]
+                    korekta = 0
+                    poziom = poziom + korekta
+                    pion = pion - korekta
+                    transform = 'rotate(0deg)'
+                    img.style.transform = 'rotate(0deg)'
+                    img.style.top = pion + "px"
+                    img.style.left = poziom + "px"
 
                 }
-                let img = document.getElementById("klocuch nowy")
-                console.log(transform)
-                img.style.transform = transform
 
 
-            } else if (dodawany == 1 || dodawany == 2 || dodawany == 6) {
-                klocek = [[0, 0, 0], [0, 1, 0], [0, 0, 0]]
+
+            }
+            else if (dodawany == 1 || dodawany == 2 || dodawany == 6) {
+                klocek = [
+                    [0, 0, 0],
+                    [0, 1, 0],
+                    [0, 0, 0]]
                 if (oldSymbol[0][0] == 1)
-                    klocek[2][0] = 1
-                if (oldSymbol[0][2] == 1)
-                    klocek[0][0] = 1
-                if (oldSymbol[2][2] == 1)
                     klocek[0][2] = 1
-                if (oldSymbol[2][0] == 1)
+                if (oldSymbol[0][2] == 1)
                     klocek[2][2] = 1
+                if (oldSymbol[2][2] == 1)
+                    klocek[2][0] = 1
+                if (oldSymbol[2][0] == 1)
+                    klocek[0][0] = 1
 
                 if (oldSymbol[0][1] == 1)
-                    klocek[1][0] = 1
-                if (oldSymbol[1][2] == 1)
-                    klocek[0][1] = 1
-                if (oldSymbol[2][1] == 1)
                     klocek[1][2] = 1
-                if (oldSymbol[1][0] == 1)
+                if (oldSymbol[1][2] == 1)
                     klocek[2][1] = 1
-
+                if (oldSymbol[2][1] == 1)
+                    klocek[1][0] = 1
+                if (oldSymbol[1][0] == 1)
+                    klocek[0][1] = 1
             }
             else if (dodawany == 4) {
                 if (klocek[0][1] == 1 && klocek[1][2] == 1) {
                     klocek = [
-                        [0, 0, 1],
-                        [0, 0, 1],
-                        [0, 1, 1],
+                        [1, 1, 0],
+                        [1, 0, 0],
+                        [1, 0, 0],
                     ]
-
+                    korekta = 37
+                    poziom = poziom + korekta
+                    pion = pion - korekta
+                    transform = 'rotate(270deg)'
+                    img.style.transform = 'rotate(270deg)'
+                    img.style.top = pion + "px"
+                    img.style.left = poziom + "px"
                 } else if (klocek[0][1] == 1 && klocek[1][0] == 1) {
                     klocek = [
                         [0, 0, 0],
                         [1, 0, 0],
                         [1, 1, 1],
                     ]
-
+                    korekta = 37
+                    poziom = poziom + korekta
+                    pion = pion - korekta
+                    transform = 'rotate(180deg)'
+                    img.style.transform = 'rotate(180deg)'
+                    img.style.top = pion + "px"
+                    img.style.left = poziom + "px"
                 } else if (klocek[1][0] == 1 && klocek[2][1] == 1) {
                     klocek = [
-                        [1, 1, 0],
-                        [1, 0, 0],
-                        [1, 0, 0],
+                        [0, 0, 1],
+                        [0, 0, 1],
+                        [0, 1, 1],
                     ]
+                    korekta = 37
+                    poziom = poziom + korekta
+                    pion = pion - korekta
+                    transform = 'rotate(90deg)'
+                    img.style.transform = 'rotate(90deg)'
+                    img.style.top = pion + "px"
+                    img.style.left = poziom + "px"
                 } else {
                     klocek = [
                         [1, 1, 1],
                         [0, 0, 1],
                         [0, 0, 0],
                     ]
+                    korekta = 0
+                    poziom = poziom + korekta
+                    pion = pion - korekta
+                    transform = 'rotate(0deg)'
+                    img.style.transform = 'rotate(0deg)'
+                    img.style.top = pion + "px"
+                    img.style.left = poziom + "px"
                 }
             } else if (dodawany == 7) {
                 if (klocek[0][1] == 1 && klocek[1][0] == 1) {
+                    klocek = [
+                        [1, 0, 0],
+                        [1, 0, 0],
+                        [1, 1, 0],
+                    ]
+                    korekta = 37
+                    poziom = poziom + korekta
+                    pion = pion - korekta
+                    transform = 'rotate(90deg)'
+                    img.style.transform = 'rotate(90deg)'
+                    img.style.top = pion + "px"
+                    img.style.left = poziom + "px"
+                } else if (klocek[1][0] == 1 && klocek[2][1] == 1) {
+                    klocek = [
+                        [0, 0, 0],
+                        [0, 0, 1],
+                        [1, 1, 1],
+                    ]
+                    korekta = 37
+                    poziom = poziom + korekta
+                    pion = pion - korekta
+                    transform = 'rotate(180deg)'
+                    img.style.transform = 'rotate(180deg)'
+                    img.style.top = pion + "px"
+                    img.style.left = poziom + "px"
+                } else if (klocek[1][2] == 1 && klocek[2][1] == 1) {
                     klocek = [
                         [0, 1, 1],
                         [0, 0, 1],
                         [0, 0, 1],
                     ]
-                } else if (klocek[1][0] == 1 && klocek[2][1] == 1) {
-
-                    klocek = [
-                        [0, 0, 0],
-                        [0, 0, 1],
-                        [1, 1, 1],
-                    ]
-                } else if (klocek[1][2] == 1 && klocek[2][1] == 1) {
-                    klocek = [
-                        [1, 0, 0],
-                        [1, 0, 0],
-                        [1, 1, 0],
-                    ]
+                    korekta = 37
+                    poziom = poziom + korekta
+                    pion = pion - korekta
+                    transform = 'rotate(270deg)'
+                    img.style.transform = 'rotate(270deg)'
+                    img.style.top = pion + "px"
+                    img.style.left = poziom + "px"
                 } else {
                     klocek = [
                         [1, 1, 1],
                         [1, 0, 0],
                         [0, 0, 0],
                     ]
+                    korekta = 37
+                    poziom = poziom + korekta
+                    pion = pion - korekta
+                    transform = 'rotate(0deg)'
+                    img.style.transform = 'rotate(0deg)'
+                    img.style.top = pion + "px"
+                    img.style.left = poziom + "px"
                 }
             }
             let sprawdza_czy_git: boolean = false
