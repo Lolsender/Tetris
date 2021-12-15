@@ -35,6 +35,7 @@ plansza.src = "./assets/plansza.png"
 plansza_div.appendChild(plansza)
 let next: number
 losowanie_nexta()
+let zmiennaOdnawiania: number = 0
 ////////
 function losowanie_nexta() {
     if (document.getElementById("next")) {
@@ -58,6 +59,26 @@ function losowanie_nexta() {
     plansza_div.appendChild(next_img)
     return next
 }
+//////
+let left_paska: number = 505
+
+
+
+for (let i = 0; i < 7; i++) {
+    let pasek: HTMLDivElement = document.createElement("div")
+    pasek.style.width = "20px"
+    pasek.style.height = "10px"
+    pasek.style.top = "705px"
+    pasek.style.left = left_paska + "px"
+    pasek.style.position = "absolute"
+    pasek.style.backgroundColor = "yellow"
+    pasek.id = i + "_p"
+    left_paska = left_paska + 25
+    // pasek.style.margin = "5px"
+    pasek.style.left = left_paska + "px"
+    plansza_div.appendChild(pasek)
+}
+
 
 //////
 let klocek: number[][]
@@ -96,101 +117,216 @@ switch (dodawany) {
     }
 }
 
-
-
-
 let x: number = 4
 let y: number = 1
 
-// for (let i = 0; i < klocek.length; i++) {
-//     for (let j = 0; j < klocek[i].length; j++) {
-//         if (klocek[i][j] == 1) {
-//             tablica[y + i][x + j] = klocek[i][j]
-//         }
-//     }
-// }
-// let pion: number = 175 + 25 * y
-// let poziom: number = 25 + 25 * x
-// let dodawany_img: HTMLImageElement = document.createElement("img")
-// dodawany_img.src = "./assets/kolor" + dodawany + ".png"
-// dodawany_img.style.left = poziom + "px"
-// dodawany_img.style.top = pion + "px"
-// dodawany_img.style.position = "absolute"
-// if (dodawany == 3) {
-//     dodawany_img.style.width = klocek.length * rozmiar_pola + "px"
-//     dodawany_img.style.height = 25 + "px"
-// }
-// else if (dodawany == 5) {
-//     dodawany_img.style.width = klocek.length * rozmiar_pola + "px"
-//     dodawany_img.style.height = klocek.length * rozmiar_pola + "px"
-// }
-// else {
-//     dodawany_img.style.width = klocek.length * rozmiar_pola + "px"
-//     dodawany_img.style.height = (klocek.length - 1) * rozmiar_pola + "px"
-// }
+let zmienna: boolean = false
+let prawo: boolean = false
+let lewo: boolean = false
+function spadanie(gdzie: string) {
+    let sprawdza_czy_git: boolean = false
+    if (gdzie == "dol") {
+        sprawdza_czy_git = sprawdzanie_dol()
+    }
+    else if (gdzie == "lewo") {
+        sprawdza_czy_git = sprawdzanie_lewo()
+    }
+    else if (gdzie == "prawo") {
+        sprawdza_czy_git = sprawdzanie_prawo()
+    }
 
-// plansza_div.appendChild(dodawany_img)
-// console.table(tablica)
-//Pozdrawiam EA
-function spadanie() {
-    for (let i = 0; i < tablica.length; i++) {
-        for (let j = 0; j < tablica[0].length; j++) {
-            if (tablica[i][j] == 1) {
-                tablica[i][j] = 0
+    if (sprawdza_czy_git) {
+        for (let i = 0; i < tablica.length; i++) {
+            for (let j = 0; j < tablica[0].length; j++) {
+                if (tablica[i][j] == 1) {
+                    tablica[i][j] = 0
+                }
+            }
+        }
+        for (let i = 0; i < klocek.length; i++) {
+            for (let j = 0; j < klocek[i].length; j++) {
+                if (klocek[i][j] == 1) {
+                    tablica[y + i][x + j] = klocek[i][j]
+                }
+            }
+        }
+        if (document.getElementById("klocuch")) {
+            plansza_div.removeChild(document.getElementById("klocuch"))
+        }
+
+        let pion: number = 178 + 26 * y
+        let poziom: number = 15 + 26 * x
+        let dodawany_img: HTMLImageElement = document.createElement("img") as HTMLImageElement
+        dodawany_img.src = "./assets/kolor" + dodawany + ".png"
+        dodawany_img.id = "klocuch"
+        dodawany_img.style.left = poziom + "px"
+        dodawany_img.style.top = pion + "px"
+        dodawany_img.style.position = "absolute"
+        if (dodawany == 3) {
+            dodawany_img.style.width = klocek.length * rozmiar_pola + "px"
+            dodawany_img.style.height = 25 + "px"
+        }
+        else if (dodawany == 5) {
+            dodawany_img.style.width = klocek.length * rozmiar_pola + "px"
+            dodawany_img.style.height = klocek.length * rozmiar_pola + "px"
+        }
+        else {
+            dodawany_img.style.width = klocek.length * rozmiar_pola + "px"
+            dodawany_img.style.height = (klocek.length - 1) * rozmiar_pola + "px"
+        }
+
+        plansza_div.appendChild(dodawany_img)
+        // console.clear()
+        console.table(tablica)
+    }
+    else {
+        clearInterval(interwalek)
+    }
+
+}
+
+
+let interwalek = setInterval(() => {
+    for (let i = 0; i < klocek.length; i++) {             //przyszłe położenie klocka
+        for (let j = 0; j < klocek[i].length; j++) {
+            if (klocek[i][j] == 1) {
+                // tablica[y + i][x + j] = klocek[i][j]
+                if (tablica[y + i + 1][x + j] == 2 || tablica[y + i + 1][x + j] == 'x') {
+                    zmienna = true
+                    clearInterval(interwalek)
+                }
             }
         }
     }
+
     for (let i = 0; i < klocek.length; i++) {
         for (let j = 0; j < klocek[i].length; j++) {
             if (klocek[i][j] == 1) {
-                tablica[y + i][x + j] = klocek[i][j]
+                // tablica[y + i][x + j] = klocek[i][j]
+                if (tablica[y + i][x + j + 1] == 2 || tablica[y + i][x + j + 1] == 'x') {
+                    prawo = true
+                }
+                else if (tablica[y + i][x + j - 1] == 2 || tablica[y + i][x + j - 1] == 'x') {
+                    lewo = true
+                }
+                else {
+                    lewo = false
+                    prawo = false
+                }
             }
         }
     }
-    if (document.getElementById("rzyczniakchuj")) {
-        plansza_div.removeChild(document.getElementById("rzyczniakchuj"))
-    }
+    spadanie("dol")
+    if (zmienna == false) {
+        spadanie("dol")
 
-    let pion: number = 175 + 26 * y
-    let poziom: number = 25 + 26 * x
-    let dodawany_img: HTMLImageElement = document.createElement("img")
-    dodawany_img.src = "./assets/kolor" + dodawany + ".png"
-    dodawany_img.id = "rzyczniakchuj"
-    dodawany_img.style.left = poziom + "px"
-    dodawany_img.style.top = pion + "px"
-    dodawany_img.style.position = "absolute"
-    if (dodawany == 3) {
-        dodawany_img.style.width = klocek.length * rozmiar_pola + "px"
-        dodawany_img.style.height = 25 + "px"
-    }
-    else if (dodawany == 5) {
-        dodawany_img.style.width = klocek.length * rozmiar_pola + "px"
-        dodawany_img.style.height = klocek.length * rozmiar_pola + "px"
     }
     else {
-        dodawany_img.style.width = klocek.length * rozmiar_pola + "px"
-        dodawany_img.style.height = (klocek.length - 1) * rozmiar_pola + "px"
+        setTimeout(() => {
+            console.log("trzeba losować")
+            let klocuch = document.getElementById('klocuch') as HTMLImageElement
+            klocuch.src = './assets/szary' + dodawany + '.png'
+            losowanie_nexta()
+            zmiennaOdnawiania = 1
+        }, 1000)
     }
-
-    plansza_div.appendChild(dodawany_img)
-    console.table(tablica)
-}
-let interwalek = setInterval(() => {
-
-    spadanie()
     y++
 
 }, 1000)
 
+function sprawdzanie_dol() {
+    let sprawdzenie_czy_dobrze: number = 0
+    for (let i = 0; i < klocek.length; i++) {
+        for (let j = 0; j < klocek[i].length; j++) {
+            if (klocek[i][j] == 1) {
+                // tablica[y + i][x + j] = klocek[i][j]
+                if (tablica[y + i][x + j] == 2) {
+                    console.log('dzieje sie')
+                    zmienna = true
+                    sprawdzenie_czy_dobrze++
+
+                }
+                else if (tablica[y + i][x + j] == 'x') {
+                    zmienna = true
+                    sprawdzenie_czy_dobrze++
+
+                }
+            }
+        }
+    }
+
+    return (sprawdzenie_czy_dobrze == 0)
+}
+function sprawdzanie_lewo() {
+    let sprawdzenie_czy_dobrze: number = 0
+    for (let i = 0; i < klocek.length; i++) {
+        for (let j = 0; j < klocek[i].length; j++) {
+            if (klocek[i][j] == 1) {
+                // tablica[y + i][x + j] = klocek[i][j]
+                if (tablica[y + i][x + j] == 2) {
+                    console.log('dzieje sie')
+
+                    sprawdzenie_czy_dobrze++
+
+                }
+                else if (tablica[y + i][x + j] == 'x') {
+
+                    sprawdzenie_czy_dobrze++
+
+                }
+            }
+        }
+    }
+
+    return (sprawdzenie_czy_dobrze == 0)
+}
+function sprawdzanie_prawo() {
+    let sprawdzenie_czy_dobrze: number = 0
+    for (let i = 0; i < klocek.length; i++) {
+        for (let j = 0; j < klocek[i].length; j++) {
+            if (klocek[i][j] == 1) {
+                // tablica[y + i][x + j] = klocek[i][j]
+                if (tablica[y + i][x + 1 + j] == 2) {
+                    console.log('dzieje sie')
+
+                    sprawdzenie_czy_dobrze++
+
+                }
+                else if (tablica[y + i][x + 1 + j] == 'x') {
+
+                    sprawdzenie_czy_dobrze++
+
+                }
+            }
+        }
+    }
+
+    return (sprawdzenie_czy_dobrze == 0)
+}
+
 document.addEventListener("keydown", (e: KeyboardEvent) => {
     if (e.key == "s") {
-        spadanie()
-        y++
+        if (!zmienna) {
+            spadanie("dol")
+            y++
+            console.log(y)
+        }
     } else if (e.key == "a") {
-        x--
-        spadanie()
+        if (!lewo) {
+            spadanie("lewo")
+            x--
+        }
+
+
     } else if (e.key == "d") {
-        x++
-        spadanie()
+        if (!prawo) {
+            spadanie("prawo")
+            x++
+            console.log()
+
+        }
+
     }
 })
+
+
